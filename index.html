@@ -1,24 +1,75 @@
-<!-- Language: HTML -->
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Lake Stevens Service Request</title>
-<!-- Standard Favicon -->
-<link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="icon" sizes="32x32" type="image/png"/>
-<link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="icon" sizes="16x16" type="image/png"/>
-<!-- Apple Touch Icon for iOS -->
-<link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16565" rel="apple-touch-icon" sizes="180x180"/>
-<!-- Optional: iOS Safari pinned tab icon -->
-<link color="#5bbad5" href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="mask-icon"/><link href="site.webmanifest" rel="manifest"/>
-<!-- Metadata for theme color and appearance -->
-<meta content="#ffffff" name="theme-color"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lake Stevens Service Request</title>
+
+  <!-- Standard Favicons -->
+  <link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="icon" sizes="32x32" type="image/png"/>
+  <link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="icon" sizes="16x16" type="image/png"/>
+
+  <!-- Apple Touch Icon for iOS -->
+  <link href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16565" rel="apple-touch-icon" sizes="180x180"/>
+
+  <!-- Optional: iOS Safari pinned tab icon -->
+  <link color="#5bbad5" href="https://lakestevenswa.gov/ImageRepository/Document?documentID=16566" rel="mask-icon"/>
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="site.webmanifest"/>
+
+  <!-- Metadata for theme color and appearance -->
+  <meta name="theme-color" content="#ffffff"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 </head>
 <body style="background-color: rgb(232, 232, 232)">
-<iframe frameborder="0" height="4000px" src="https://lakestevens-service-request-lakestevens.hub.arcgis.com/" width="100%"></iframe>
+
+  <!-- Install Button -->
+  <div id="flexButtons" style="display: flex; background-color: #1D3964;justify-content: center;">
+    <button id="installButton" style="display:none; padding:10px 20px; background-color: #904E28; color: #ffffff;border-color: #ffffff;margin-top: 4px;">Install App for Android</button>
+    <button id="IOSButton" style="display:none; padding:10px 20px; background-color: #904E28;color: #ffffff;margin-left: 5%; border-color: #ffffff;margin-top: 4px;">Instructions for IOS</button>
+  </div>
+  <!-- iOS Instructions -->
+  <div id="iosInstructions" style="display:none;bottom:20px; left:20px; padding:10px; background:#fff; border:1px solid #ccc; text-align: center;">
+    On iOS: Tap the Share icon and choose "Add to Home Screen".
+  </div>
+
+  <!-- ArcGIS app -->
+  <iframe frameborder="0" height="3800px" src="https://lakestevens-service-request-lakestevens.hub.arcgis.com/" width="100%"></iframe>
+
+  
+
+  <script>
+    let deferredPrompt;
+
+    // Listen for install availability (Chromium browsers)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installButton').style.display = 'block';
+    });
+
+    // Trigger the browser's install prompt from our button
+    document.getElementById('installButton').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null; // Can only use once
+      document.getElementById('installButton').style.display = 'none';
+    });
+
+    // Hide the button once installed
+    window.addEventListener('appinstalled', () => {
+      document.getElementById('installButton').style.display = 'none';
+    });
+
+    // iOS Safari does not support programmatic install; show instructions
+    const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isIOS && isSafari) {
+      document.getElementById('iosInstructions').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
